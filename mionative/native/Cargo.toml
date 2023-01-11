@@ -1,11 +1,11 @@
 [package]
-name = "mionative"
+name = "mionative" #
 version = "0.1.0"
 authors = ["Yan Kun <1939810907@qq.com>"]
 edition = "2021"
 
 [dependencies]
-mio = "0.8"
+mio = { version = "0.8", "features" = ["net", "os-poll"] }
 jni = "0.20"
 
 [lib]
