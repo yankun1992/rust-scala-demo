@@ -161,10 +161,7 @@ pub unsafe extern "C" fn Java_io_otavia_channel_mio_JavaJNI_write0(
 
     buffer.write(data.as_bytes()).unwrap();
 
-    // ptr::copy(data.as_bytes(), buffer, data.as_bytes().len());
-
     println!("{:?}", buffer);
 
-    // ptr::copy(data.as_bytes() as *const [u8], buffer, data.len());
     data.as_bytes().len() as jint
 }

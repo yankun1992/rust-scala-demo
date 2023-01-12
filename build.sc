@@ -1,7 +1,7 @@
 import mill._
 import scalalib._
 import mill.api.Loose
-import $ivy.`io.github.otavia-projects::mill-rust_mill$MILL_BIN_PLATFORM:0.1.0`
+import $ivy.`io.github.otavia-projects::mill-rust_mill$MILL_BIN_PLATFORM:0.1.1-SNAPSHOT`
 import io.github.otavia.jni.plugin.RustJniModule
 
 object mio extends ScalaModule {

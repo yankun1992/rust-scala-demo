@@ -2,18 +2,17 @@ package io.otavia.channel.mio
 
 import io.netty5.buffer.{Buffer, BufferAllocator}
 
+import java.nio.charset.Charset
+
 @main def main(): Unit = {
   val allocator = BufferAllocator.offHeapPooled()
-  val unpool = BufferAllocator.onHeapUnpooled()
 
   val buffer = allocator.allocate(1024 * 8)
-  val heapBuffer = unpool.allocate(1024 * 8)
 
   val javaJNI = new JavaJNI()
 
   val len = JavaJNI.writeBuffer(buffer)
-
-  heapBuffer.writeBytes(buffer)
+  val str = buffer.readCharSequence(len, Charset.forName("utf-8"))
 
 
   val poll = Poll.createPoll()

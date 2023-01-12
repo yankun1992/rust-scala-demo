@@ -16,5 +16,5 @@ Language: [简体中文](./README.zh_cn.md)
 
 This project uses [mill](https://github.com/com-lihaoyi/mill)
 plugin [mill-rust-jni](https://github.com/otavia-projects/mill-rust-jni) to demonstrate how to use the
-rust [mio](https://github.com/otavia-projects/mill-rust-jni) network programming library in
+rust [mio](https://github.com/tokio-rs/mio) network programming library in
 java / [scala](https://www.scala-lang.org/) project!
