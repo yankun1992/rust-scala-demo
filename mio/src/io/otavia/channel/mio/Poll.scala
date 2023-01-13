@@ -8,7 +8,7 @@ class Poll(val raw: Long) {
 
   private val events = new Events(belong = this)
 
-  private val sockets = mutable.HashMap.empty[Int, MioSocket]
+  val sockets = mutable.HashMap.empty[Int, MioSocket]
 
   def getSocket(id: Int): MioSocket = sockets(id)
 

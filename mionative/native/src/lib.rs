@@ -18,21 +18,28 @@ use mio::net::{TcpListener, TcpStream};
 pub unsafe extern "C" fn Java_io_otavia_channel_mio_Event_token0(
     env: JNIEnv, this: jobject, event_raw: jlong) -> jint {
     let event = Box::from_raw(event_raw as *mut Option<&Event>);
-    event.unwrap().token().0 as jint
+    let ret = event.unwrap().token().0 as jint;
+    println!("token id is {}", ret);
+    Box::into_raw(event);
+    ret
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_io_otavia_channel_mio_Event_isReadable0(
     env: JNIEnv, this: jobject, event_raw: jlong) -> jboolean {
     let event = Box::from_raw(event_raw as *mut Option<&Event>);
-    event.unwrap().is_readable() as jboolean
+    let ret = event.unwrap().is_readable() as jboolean;
+    Box::into_raw(event);
+    ret
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_io_otavia_channel_mio_Event_isWritable0(
     env: JNIEnv, this: jobject, event_raw: jlong) -> jboolean {
     let event = Box::from_raw(event_raw as *mut Option<&Event>);
-    event.unwrap().is_writable() as jboolean
+    let ret = event.unwrap().is_writable() as jboolean;
+    Box::into_raw(event);
+    ret
 }
 
 // JNI for scala class io.otavia.channel.mio.Events
@@ -42,8 +49,22 @@ pub unsafe extern "C" fn Java_io_otavia_channel_mio_Events_next0(
     env: JNIEnv, this: jobject, iter_raw: jlong) -> jlong {
     let mut iter = Box::from_raw(iter_raw as *mut Iter);
     let next = Box::new(iter.next());
-    Box::into_raw(next) as jlong
+    let ret = Box::into_raw(next) as jlong;
+    Box::into_raw(iter);
+    ret
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_otavia_channel_mio_Events_optIsEmpty0(
+    env: JNIEnv, this: jobject, opt_raw: jlong) -> jboolean {
+    let next = Box::from_raw(opt_raw as *mut Option<&Event>);
+
+    let ret = next.is_none() as jboolean;
+    Box::into_raw(next);
+
+    ret
+}
+
 
 // JNI for scala object io.otavia.channel.mio.Events$
 //
@@ -60,6 +81,7 @@ pub unsafe extern "C" fn Java_io_otavia_channel_mio_Events_00024_openEvents(
 pub unsafe extern "C" fn Java_io_otavia_channel_mio_Poll_register0(
     env: JNIEnv, this: jobject, poll_raw: jlong, socket_raw: jlong,
     id: jint, interest: jint, tp: jint) {
+    println!("register0 id is {}", id);
     let inter = match interest {
         1 => Interest::READABLE,
         2 => Interest::WRITABLE,
@@ -72,15 +94,18 @@ pub unsafe extern "C" fn Java_io_otavia_channel_mio_Poll_register0(
             poll.registry()
                 .register(&mut socket, Token(id as usize), inter)
                 .unwrap();
+            Box::into_raw(socket);
         }
         1 => {
             let mut socket = Box::from_raw(socket_raw as *mut TcpStream);
             poll.registry()
                 .register(&mut socket, Token(id as usize), inter)
                 .unwrap();
+            Box::into_raw(socket);
         }
         _ => {}
-    }
+    };
+    Box::into_raw(poll);
 }
 
 #[no_mangle]
@@ -93,17 +118,20 @@ pub unsafe extern "system" fn Java_io_otavia_channel_mio_Poll_select0(
     let timeout = if secs == 0 && nanos == 0 { None } else { Some(Duration::new(secs as u64, nanos as u32)) };
     println!("timeout: {:?}", timeout);
     let res = poll.poll(&mut events, timeout);
+    let mut ret_raw: jlong = -1;
     match res {
         Ok(_) => {
             println!("poll success!");
             let iter = Box::new(events.iter());
-            Box::into_raw(iter) as jlong
+            ret_raw = Box::into_raw(iter) as jlong
         }
         Err(e) => {
             // println!("Err: {}", e);
             panic!("Err: {}", e)
         }
-    }
+    };
+    Box::into_raw(poll);
+    ret_raw
 }
 
 
@@ -123,7 +151,11 @@ pub unsafe extern "C" fn Java_io_otavia_channel_mio_TcpListener_accept0(
     env: JNIEnv, this: jobject, server_raw: jlong) -> jlong {
     let server = Box::from_raw(server_raw as *mut TcpListener);
     let client = Box::new(server.accept().unwrap());
-    Box::into_raw(client) as jlong
+    let ret = Box::into_raw(client) as jlong;
+
+    Box::into_raw(server);
+
+    ret
 }
 
 

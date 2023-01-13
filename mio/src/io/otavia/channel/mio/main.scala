@@ -32,9 +32,10 @@ import java.nio.charset.Charset
         case server: TcpListener => if (event.isReadable) {
           val client = server.accept()
           poll.register(client, Interest.READABLE)
+          println("main: server accept")
         }
         case client: TcpStream => if (event.isReadable) {
-
+          println("main: client event")
         }
 
     }

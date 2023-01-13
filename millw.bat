@@ -5,7 +5,7 @@ rem You can give the required mill version with --mill-version parameter
 rem If no version is given, it falls back to the value of DEFAULT_MILL_VERSION
 rem
 rem Project page: https://github.com/lefou/millw
-rem Script Version: 0.4.5
+rem Script Version: 0.4.6
 rem
 rem If you want to improve this script, please also contribute your changes back!
 rem
@@ -16,7 +16,11 @@ rem but I don't think we need to support them in 2019
 setlocal enabledelayedexpansion
 
 if [!DEFAULT_MILL_VERSION!]==[] (
-    set "DEFAULT_MILL_VERSION=0.10.9"
+    set "DEFAULT_MILL_VERSION=0.10.10"
+)
+
+if [!GITHUB_RELEASE_CDN!]==[] (
+    set "GITHUB_RELEASE_CDN="
 )
 
 set "MILL_REPO_URL=https://github.com/com-lihaoyi/mill"
@@ -80,11 +84,11 @@ if not exist "%MILL%" (
     )
 
     rem there seems to be no way to generate a unique temporary file path (on native Windows)
-    set DOWNLOAD_FILE=%MILL%.tmp
+    set DOWNLOAD_FILE=%MILL%.%random%.tmp
 
-    set DOWNLOAD_URL=%MILL_REPO_URL%/releases/download/!MILL_VERSION_TAG!/!MILL_VERSION!!DOWNLOAD_SUFFIX!
+    set DOWNLOAD_URL=!GITHUB_RELEASE_CDN!%MILL_REPO_URL%/releases/download/!MILL_VERSION_TAG!/!MILL_VERSION!!DOWNLOAD_SUFFIX!
 
-    echo Downloading mill %MILL_VERSION% from %MILL_REPO_URL%/releases ... 1>&2
+    echo Downloading mill %MILL_VERSION% from !DOWNLOAD_URL! ... 1>&2
 
     if not exist "%MILL_DOWNLOAD_PATH%" mkdir "%MILL_DOWNLOAD_PATH%"
     rem curl is bundled with recent Windows 10

@@ -1,7 +1,10 @@
 package io.otavia.channel.mio
 
 class Event(val raw: Long, val poll: Poll) {
-  def socket: MioSocket = poll.getSocket(token0(raw))
+  def socket: MioSocket = {
+    val socketId = token0(raw)
+    poll.getSocket(socketId)
+  }
 
   def isReadable: Boolean = isReadable0(raw)
 
