@@ -17,7 +17,8 @@ public class JavaJNI extends NativeLoader {
 
     public static int writeBuffer(Buffer buffer) {
         ComponentIterator<?> iter = buffer.forEachComponent();
-        BufferComponent component = iter.first();
+        BufferComponent component = iter.firstWritable();
+        iter.close();
         int write = JavaJNI.write0(component.writableNativeAddress(), buffer.writableBytes());
         buffer.writerOffset(buffer.writerOffset() + write);
         return write;

@@ -36,10 +36,12 @@ hello world";
 
     // Start an event loop.
     loop {
+        println!("start polling -----------------------------");
         // Poll Mio for events, blocking until we get an event.
         poll.poll(&mut events, None)?;
         println!("poll success");
         for event in events.iter() {
+            println!("{:?}", event);
             match event.token() {
                 SERVER => {
                     let (client_stream, client_address) = server.accept()?;
