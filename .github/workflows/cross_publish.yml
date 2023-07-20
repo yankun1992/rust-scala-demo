@@ -24,8 +24,6 @@ jobs:
             OS: ubuntu-latest
           - TARGET: aarch64-unknown-linux-musl # tested on aws t4g.nano in alpine container
             OS: ubuntu-latest
-          - TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
-            OS: macos-latest
           - TARGET: x86_64-pc-windows-msvc # tested on a windows machine
             OS: windows-latest
     runs-on: ${{ matrix.OS }}
@@ -48,7 +46,7 @@ jobs:
       - run: ./millw mionative.compileNative
       - uses: actions/upload-artifact@v3
         with:
-          name: upload ${{ matrix.TARGET }}
+          name: result
           path: out/mionative/compileNative.dest/native/
   download:
     needs: cross
