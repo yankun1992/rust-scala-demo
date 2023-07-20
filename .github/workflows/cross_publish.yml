@@ -22,6 +22,12 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: x86_64-unknown-linux-gnu
+          override: true
+      - run: cd mionative/native && cargo build --release --target x86_64-unknown-linux-gnu
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
           target: x86_64-apple-darwin
           override: true
       - run: cd mionative/native && cargo build --release --target x86_64-apple-darwin
@@ -31,12 +37,6 @@ jobs:
           target: x86_64-pc-windows-msvc
           override: true
       - run: cd mionative/native && cargo build --release --target x86_64-pc-windows-msvc
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-unknown-linux-gnu
-          override: true
-      - run: cd mionative/native && cargo build --release --target x86_64-unknown-linux-gnu
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
