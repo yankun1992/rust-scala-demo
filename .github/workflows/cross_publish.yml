@@ -26,7 +26,10 @@ jobs:
           override: true
       - run: cargo install cross
       - run: cd mionative/native && cargo build --release --target x86_64-unknown-linux-gnu
+      - run: ls mionative/native/target
       - run: cd mionative/native && cross build --release --target x86_64-pc-windows-msvc
+      - run: ls mionative/native/target
       - run: cd mionative/native && cross build --release --target aarch64-apple-darwin
+      - run: ls mionative/native/target
       - run: cd mionative/native && cross build --release --target x86_64-apple-darwin
       - run: ls mionative/native/target
