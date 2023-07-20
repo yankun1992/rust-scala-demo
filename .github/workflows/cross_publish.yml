@@ -50,3 +50,13 @@ jobs:
         with:
           name: upload ${{ matrix.TARGET }}
           path: out/mionative/compileNative.dest/native/
+  download:
+    needs: cross
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: result
+          path: ./native
+      - run: ls
