@@ -56,4 +56,5 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: result
-      - run: ls -R && cd .. && ls -R
+          path: ./native
+      - run: ls -R
