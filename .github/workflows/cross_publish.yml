@@ -10,30 +10,43 @@ env:
   COURSIER_REPOSITORIES: central|https://s01.oss.sonatype.org/content/repositories/snapshots|jitpack|https://corporate.com/repo
 
 jobs:
-  deploy:
-    runs-on: ubuntu-22.04
+  cross:
+    strategy:
+      fail-fast: false
+      matrix:
+        # a list of all the targets
+        include:
+          - TARGET: x86_64-unknown-linux-gnu # tested in a debian container on a mac
+            OS: ubuntu-latest
+          - TARGET: x86_64-unknown-linux-musl # test in an alpine container on a mac
+            OS: ubuntu-latest
+          - TARGET: aarch64-unknown-linux-gnu # tested on aws t4g.nano
+            OS: ubuntu-latest
+          - TARGET: aarch64-unknown-linux-musl # tested on aws t4g.nano in alpine container
+            OS: ubuntu-latest
+          - TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
+            OS: macos-latest
+          - TARGET: x86_64-pc-windows-msvc # tested on a windows machine
+            OS: windows-latest
+    runs-on: ${{ matrix.OS }}
+    env:
+      NAME: rust cross compile
+      TARGET: ${{ matrix.TARGET }}
+      OS: ${{ matrix.OS }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.TARGET }}
+          override: true
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '8'
       - run: chmod +x millw
-      - uses: actions-rs/toolchain@v1
+      - run: ./millw mionative.compileNative
+      - uses: actions/upload-artifact@v3
         with:
-          toolchain: stable
-          target: x86_64-unknown-linux-gnu
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: search
-          args: fastbloom-rs
-      - run: cd mionative/native && cross build --release --target x86_64-unknown-linux-gnu
-      - run: ls mionative/native/target
-      - run: cd mionative/native && cross build --release --target x86_64-pc-windows-msvc
-      - run: ls mionative/native/target
-      - run: cd mionative/native && cross build --release --target aarch64-apple-darwin
-      - run: ls mionative/native/target
-      - run: cd mionative/native && cross build --release --target x86_64-apple-darwin
-      - run: ls mionative/native/target
+          name: upload ${{ matrix.TARGET }}
+          path: out/mionative/compileNative.dest/native/
