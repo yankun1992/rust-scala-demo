@@ -1,7 +1,7 @@
 import mill._
 import scalalib._
 import mill.api.Loose
-import $ivy.`io.github.otavia-projects::mill-rust_mill$MILL_BIN_PLATFORM:0.2.2`
+import $ivy.`io.github.otavia-projects::mill-rust_mill$MILL_BIN_PLATFORM:0.2.4`
 import io.github.otavia.jni.plugin.RustJniModule
 
 object mio extends ScalaModule {
@@ -9,7 +9,7 @@ object mio extends ScalaModule {
 
   override def ivyDeps: T[Loose.Agg[Dep]] = Agg(
     ivy"io.netty:netty5-buffer:5.0.0.Alpha5",
-    ivy"io.github.otavia-projects::jni-loader::0.2.2"
+    ivy"io.github.otavia-projects::jni-loader::0.2.4"
   )
 
   override def moduleDeps: scala.Seq[JavaModule] = scala.Seq(mionative)
@@ -19,6 +19,8 @@ object mio extends ScalaModule {
 object mionative extends RustJniModule {
 
   override def release: Boolean = false
+
+  override def otherNativeLibraries: Seq[PathRef] = Seq(PathRef(os.pwd / "library"))
 
 }
 
